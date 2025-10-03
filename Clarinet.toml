@@ -5,10 +5,17 @@ authors = []
 telemetry = false
 cache_dir = './.cache'
 requirements = []
+[contracts.amm-pool-v2-01]
+path = 'contracts/amm-pool-v2-01.clar'
+clarity_version = 3
+epoch = '3.2'
+
 [contracts.listx-faktory-pool]
 path = 'contracts/listx-faktory-pool.clar'
 clarity_version = 3
-epoch = 'latest'
+epoch = '3.2'
+
+epoch = '3.2'
 [repl.analysis]
 passes = ['check_checker']
 
