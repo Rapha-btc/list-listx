@@ -101,13 +101,13 @@
               ;; Transfer token A to pool
               (try! (stx-transfer? amount sender CONTRACT))
               ;; Transfer token B to sender
-              (try! (as-contract (contract-call? 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory transfer dy-d CONTRACT sender none)))
+              (try! (as-contract (contract-call? 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx transfer dy-d CONTRACT sender none)))
               (print {
                   type: "buy",
                   sender: sender,
-                  token-in: 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token,
+                  token-in: "STX",
                   amount-in: amount,
-                  token-out: 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory,
+                  token-out: 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx,
                   amount-out: dy-d,
                   pool-reserves: (get-reserves-quote),
                   pool-contract: CONTRACT,
@@ -122,15 +122,15 @@
               (dy-d (get dy delta)))
               (asserts! (>= dy-d min-y-out) ERR_TOO_MUCH_SLIPPAGE)
               ;; Transfer token B to pool
-              (try! (contract-call? 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory transfer amount sender CONTRACT none))
+              (try! (contract-call? 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx transfer amount sender CONTRACT none))
               ;; Transfer token A to sender
               (try! (as-contract (stx-transfer? dy-d CONTRACT sender)))
               (print {
                   type: "sell",
                   sender: sender,
-                  token-in: 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory,
+                  token-in: 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx,
                   amount-in: amount,
-                  token-out: 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token,
+                  token-out: "STX",
                   amount-out: dy-d,
                   pool-reserves: (get-reserves-quote),
                   pool-contract: CONTRACT,
@@ -145,15 +145,15 @@
               (dx-d (get dx delta))
               (dy-d (get dy delta))
               (dk-d (get dk delta)))
-              (try! (contract-call? 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token transfer dx-d sender CONTRACT none))
-              (try! (contract-call? 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory transfer dy-d sender CONTRACT none))
+              (try! (stx-transfer? dx-d sender CONTRACT))
+              (try! (contract-call? 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx transfer dy-d sender CONTRACT none))
               (try! (ft-mint? STX-LiSTX dk-d sender))
               (print {
                   type: "add-liquidity",
                   sender: sender,
-                  token-a: 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token,
+                  token-a: "STX",
                   token-a-amount: dx-d,
-                  token-b: 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory,
+                  token-b: 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx,
                   token-b-amount: dy-d,
                   lp-tokens: dk-d,
                   pool-reserves: (get-reserves-quote),
@@ -169,14 +169,14 @@
               (dy-d (get dy delta))
               (dk-d (get dk delta)))
               (try! (ft-burn? STX-LiSTX dk-d sender))
-              (try! (as-contract (contract-call? 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token transfer dx-d CONTRACT sender none)))
-              (try! (as-contract (contract-call? 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory transfer dy-d CONTRACT sender none)))
+              (try! (as-contract (stx-transfer? dx-d CONTRACT sender)))
+              (try! (as-contract (contract-call? 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx transfer dy-d CONTRACT sender none)))
               (print {
                     type: "remove-liquidity",
                     sender: sender,
-                    token-a: 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token,
+                    token-a: "STX",
                     token-a-amount: dx-d,
-                    token-b: 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory,
+                    token-b: 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx,
                     token-b-amount: dy-d,
                     lp-tokens: dk-d,
                     pool-reserves: (get-reserves-quote),
@@ -191,8 +191,8 @@
   
       (define-private (get-reserves)
           { 
-            a: (unwrap-panic (contract-call? 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token get-balance CONTRACT)), 
-            b: (unwrap-panic (contract-call? 'SPV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RCJDC22.b-faktory get-balance CONTRACT))
+            a: (stx-get-balance CONTRACT), 
+            b: (unwrap-panic (contract-call? 'SM26NBC8SFHNW4P1Y4DFH27974P56WN86C92HPEHH.token-lqstx get-balance CONTRACT))
           })
   
       ;; --- Quote Functions ---
